@@ -11,13 +11,7 @@ const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
-let nodeModules = fs.readdirSync('./node_modules')
-    .filter((module) => {
-        return module !== '.bin';
-    })
-    .reduce((prev, module) => {
-        return Object.assign(prev, {[module]: 'commonjs ' + module});
-    }, {});
+
 let mainConfig = {
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
@@ -50,9 +44,8 @@ let mainConfig = {
     ]
   },
   node: {
-    // __dirname: process.env.NODE_ENV !== 'production',
-    __filename: process.env.NODE_ENV !== 'production',
-    __dirname: true
+    __dirname: process.env.NODE_ENV !== 'production',
+    __filename: process.env.NODE_ENV !== 'production'
   },
   output: {
     filename: '[name].js',
@@ -66,8 +59,6 @@ let mainConfig = {
     extensions: ['.js', '.json', '.node']
   },
   target: 'electron-main',
-
-  externals: nodeModules
 }
 
 /**
