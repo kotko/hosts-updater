@@ -4,14 +4,10 @@
 
         <div class="row align-items-center">
           <div class="col-6">
-            <div class="header-hours">
-              Оценка трудозатрат: <strong id="id_estimated_hours"></strong>
-            </div>
+
           </div>
           <div class="col-6">
-            <div class="header-hours">
-              Трудозатраты: <strong id="id_spent_hours"></strong>
-            </div>
+          
           </div>
         </div>
         <!-- <div class="row align-items-center">
