@@ -45,11 +45,12 @@ const winURL = process.env.NODE_ENV === 'development'
       // }
     })
     window = new BrowserWindow({
-      width: 1200,
-      height: 800,
+      width: 1000,
+      height: 700,
       show: true,
-      frame: true,
-      resizable: true,
+      frame: false,
+      titleBarStyle: 'customButtonsOnHover',
+      resizable: false,
       // icon: path.join(assetsDirectory, 'app-icon.png')
       icon: path.join(assetsDirectory, 'icons/png/64x64.png')
     })

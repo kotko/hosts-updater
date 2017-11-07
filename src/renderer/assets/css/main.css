@@ -1,9 +1,12 @@
-.table .btn{
-  text-align: center;
+.title__hosts{
+  text-transform: uppercase;
+  color: #707070;
+  text-decoration: none;
 }
-.table td {
-  vertical-align: middle;
+.items__hosts{
+  padding-top: 20px;
+  padding-bottom: 20px
 }
-/*.issueClose__form .btn{
-  margin: 20px 0 0 0
-}*/
+.togglebutton label{
+  text-transform: uppercase;
+}
