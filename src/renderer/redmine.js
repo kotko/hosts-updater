@@ -1,10 +1,10 @@
 'use strict'
 import { app, BrowserWindow, dialog, remote, shell} from 'electron'
 import Hosts from '../hosts'
-const storage = require('electron-storage');
+// const storage = require('electron-storage');
 const Git = require('../git')
 var sudo = require('sudo-prompt')
-
+// const storage = require('electron-storage');
 var fs = remote.require('fs')
 var file =  '/etc/hosts'
 var options = {
@@ -13,62 +13,58 @@ var options = {
 const pathConfig = '/Users/kotko/Desktop';
 
 
+const os = require('os');
+const storage = require('electron-json-storage');
+storage.setDataPath(os.tmpdir());
+
 export default function Test() {
 
 }
-Git.getListHosts();
 
-storage.get('getListFileContents')
-.then(data => {
+// storage.remove('hostsOrig', function(error) {
+//   if (error) throw error;
+// });
 
-  $.each(data, function (index, value) {
-    var name = value.fileName;
-    name = name.substring(0, name.length - 3);
-    var item = '<div class="row align-items-center items__hosts">'+
-      '<div class="col-3">'+
-      '<div class="togglebutton">'+
-      '<label>'+
-      '<input type="checkbox" value="off">'+
-      '<div class="toggle"></div>'+
-      name
-      '</label>'+
-      '</div>'+
-      '</div>'+
-      '<div class="col-9">'+
-      '<h5 class="title__hosts mb-1"></h5>'+
-      '</div>'+
-      '</div>';
-    $('.HostsList').append(item);
+// storage.getAll(function(error, data) {
+// if (error) throw error;
+//
+// console.log(data);
+// });
 
-  });
+// Git.updateStorage()
 
-})
-.catch(err => {
-  console.error(err);
+Git.saveOrigHosts()
+
+
+storage.has('getListFileContents', function(error, hasKey) {
+  if (error) throw error;
+
+  if (hasKey) {
+    Git.getListHosts();
+  }else{
+
+    Git.setListHosts();
+  }
 });
 
-
-
 $('body').on('change', '.togglebutton input', function (e) {
-  var thi = $(this)
-  if($(this).prop("checked") == true){
+  var btn = $(this)
+  var status = toggleBtnHosts($(this))
+  Git.enableHost(status, btn.attr('data-fileName'))
+});
+var toggleBtnHosts = function(btn) {
+  if(btn.prop("checked") == true){
     $('.togglebutton input').each(function() {
-      if(thi != $(this)){
+      if(btn != $(this)){
         $(this).prop("checked", false)
         $(this).val() == 'off'
       }
     })
-    $(this).prop("checked", true)
-    $(this).val('on')
+    btn.prop("checked", true)
+    btn.val('on')
   }else{
-    $(this).prop("checked", false)
-    $(this).val('off')
+    btn.prop("checked", false)
+    btn.val('off')
   }
-});
-
-
-
-$('body').on('click', '#testclick', function (e) {
-  e.preventDefault()
-  Hosts('/Users/kotko/Desktop/test.file').write
-});
+  return btn.prop("checked")
+}

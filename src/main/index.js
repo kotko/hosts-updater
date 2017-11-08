@@ -1,105 +1,135 @@
-'use strict'
-
-import { app, BrowserWindow, ipcMain, Tray } from 'electron'
+const {app, BrowserWindow, ipcMain, Tray} = require('electron')
 const path = require('path')
-let tray = undefined
-let window = undefined
+const storage = require('electron-json-storage');
+const { exec } = require('child_process');
 const assetsDirectory = path.join(__dirname, 'assets')
 
 
 
 
 
-/**
- * Set `__static` path to static files in production
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
- */
-if (process.env.NODE_ENV !== 'development') {
-  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
+
+let tray = undefined
+let window = undefined
+
+// Don't show the app in the doc
+// if(process.platform == 'darwin'){
+  // app.dock.hide()
+// }
+
+app.on('ready', () => {
+  createTray()
+  createWindow()
+})
+
+// Quit the app when the window is closed
+app.on('window-all-closed', () => {
+  app.quit()
+})
+
+const createTray = () => {
+  var nameIcon = '';
+  var platform = process.platform;
+  // console.log(platform)
+  if(platform == 'darwin'){
+    nameIcon = '/png/16x16.png';
+  }else{
+    nameIcon = '/png/32x32.png';
+  }
+
+  tray = new Tray(path.join(assetsDirectory, nameIcon))
+  tray.on('right-click', closeWindow)
+  tray.on('double-click', toggleWindow)
+  tray.on('click', function (event) {
+    toggleWindow()
+
+    // Show devtools when command clicked
+    // if (window.isVisible() && process.defaultApp && event.metaKey) {
+      // window.openDevTools({mode: 'detach'})
+    // }
+  })
 }
 
-let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
+const getWindowPosition = () => {
+  const windowBounds = window.getBounds()
+  const trayBounds = tray.getBounds()
 
-  // This method is called once Electron is ready to run our code
-  // It is effectively the main method of our Electron app
+  // Center window horizontally below the tray icon
+  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
 
-  app.on('window-all-closed', () => {
-    app.quit()
+  // Position window 4 pixels vertically below the tray icon
+  const y = Math.round(trayBounds.y + trayBounds.height + 4)
+
+  return {x: x, y: y}
+}
+
+const createWindow = () => {
+
+  window = new BrowserWindow({
+    width: 300,
+    height: 500,
+    minHeight: 300,
+    show: true,
+    frame: false,
+    titleBarStyle: 'customButtonsOnHover',
+    icon: path.join(assetsDirectory, 'icons/png/64x64.png')
+    // show: false,
+    // frame: false,
+    // fullscreenable: false,
+    // resizable: true,
+    // transparent: true,
+    // webPreferences: {
+    //   // Prevents renderer process code from not running when window is
+    //   // hidden
+    //   backgroundThrottling: false
+    // }
   })
+  const winURL = process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080`
+    : `file://${__dirname}/index.html`
+  window.loadURL(winURL)
 
-
-  app.on('ready', () => {
-
-    tray = new Tray(path.join(assetsDirectory, 'app-icon.png'))
-    tray.on('right-click', toggleWindow)
-    tray.on('double-click', toggleWindow)
-    tray.on('click', function (event) {
-      toggleWindow()
-
-      // Show devtools when command clicked
-      // if (window.isVisible() && process.defaultApp && event.metaKey) {
-        window.openDevTools({mode: 'detach'})
-      // }
-    })
-    window = new BrowserWindow({
-      width: 1000,
-      height: 700,
-      show: true,
-      frame: false,
-      titleBarStyle: 'customButtonsOnHover',
-      resizable: false,
-      // icon: path.join(assetsDirectory, 'app-icon.png')
-      icon: path.join(assetsDirectory, 'icons/png/64x64.png')
-    })
-
-    // Tell the popup window to load our index.html file
-    window.loadURL(winURL)
-
-    // Only close the window on blur if dev tools isn't opened
-    window.on('blur', () => {
-      if(!window.webContents.isDevToolsOpened()) {
-        window.hide()
-      }
-    })
+  // Hide the window when it loses focus
+  window.on('blur', () => {
+    // if (!window.webContents.isDevToolsOpened()) {
+      // window.hide()
+    // }
   })
-
-  const toggleWindow = () => {
-    if (window.isVisible()) {
-      window.hide()
-    } else {
-      showWindow()
-    }
-  }
-
-  const showWindow = () => {
-    const trayPos = tray.getBounds()
-    const windowPos = window.getBounds()
-    let x, y = 0
-    if (process.platform == 'darwin') {
-      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-      y = Math.round(trayPos.y + trayPos.height)
-    } else {
-      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-      y = Math.round(trayPos.y + trayPos.height * 10)
-    }
+}
+const closeWindow = () => {
 
 
-    window.setPosition(x, y, false)
-    window.show()
-    window.focus()
-  }
+  // app.quit()
 
-  ipcMain.on('show-window', () => {
+
+
+}
+const toggleWindow = () => {
+  if (window.isVisible()) {
+    // window.hide()
+  } else {
     showWindow()
-  })
+  }
+}
 
-  app.on('window-all-closed', () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== 'darwin') {
-      app.quit()
-    }
-  })
+const showWindow = () => {
+  const position = getWindowPosition()
+  window.setPosition(position.x, position.y, false)
+  window.show()
+  window.focus()
+}
+
+ipcMain.on('show-window', () => {
+  showWindow()
+})
+
+// ipcMain.on('weather-updated', (event, weather) => {
+//   // Show "feels like" temperature in tray
+//   tray.setTitle(`${Math.round(weather.currently.apparentTemperature)}°`)
+//
+//   // Show summary and last refresh time as hover tooltip
+//   const time = new Date(weather.currently.time).toLocaleTimeString()
+//   tray.setToolTip(`${weather.currently.summary} at ${time}`)
+//
+//
+// })

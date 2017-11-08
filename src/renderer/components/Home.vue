@@ -13,6 +13,7 @@
         </div>
     </form>
     <div class="row">
+      <a class="btn btn-raised btn-primary reset__hosts" href="#" role="button">Reset Hosts</a>
     </div>
   </div>
 </template>

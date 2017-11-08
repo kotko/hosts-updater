@@ -1,12 +1,16 @@
-.title__hosts{
+.title__hosts {
   text-transform: uppercase;
-  color: #707070;
+  color: #777 !important;
   text-decoration: none;
 }
 .items__hosts{
-  padding-top: 20px;
-  padding-bottom: 20px
+  padding-top: 15px;
+  padding-bottom: 15px
 }
 .togglebutton label{
   text-transform: uppercase;
+}
+.reset__hosts{
+  /*text-align: right;*/
+  margin: 20px 0 0 0 !important
 }
