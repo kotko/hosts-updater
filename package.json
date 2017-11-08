@@ -22,7 +22,7 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "mwl":" electron-builder --linux deb tar.xz"
+    "mwl":" electron-builder --linux deb"
   },
   "build": {
     "productName": "test-project",

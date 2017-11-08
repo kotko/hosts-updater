@@ -17,9 +17,9 @@ const from = require('./mac')
 // import Linux from './linux'
 // import Win32 from './win32'
 
-console.log()
+
 var Hosts = function() {
-  console.log(path)
+
   var platform = process.platform;
   var os
   switch (platform) {
