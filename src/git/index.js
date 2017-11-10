@@ -3,7 +3,10 @@ import {remote} from 'electron'
 const Hosts = require('../hosts')
 const token = 'G9YdzzeyHT-RsoXaFA8e';
 const ApiUrl = 'http://gitlab.stb.ua/api/v3/projects/'
+const os = require('os');
 const storage = require('electron-json-storage');
+
+storage.setDataPath(os.tmpdir());
 var fs = remote.require('fs')
 
 
@@ -41,6 +44,7 @@ var setListHosts = function () {
   getTree.then(
     result => {
       getListFileName(result)
+
     },
     error => alert("Rejected: " + error.message) // Rejected: время вышло!
   )
@@ -56,7 +60,9 @@ var getListFileName = function (arr) {
 var getListFileUrl = function (arr) {
     var urls = []
     Promise.all(arr.map(fileName => {
-      urls.push(ApiUrl+'149/repository/files?file_path='+fileName+'&ref=master')
+      if(fileName != undefined){
+        urls.push(ApiUrl+'149/repository/files?file_path='+fileName+'&ref=master')
+      }
     })).then(response => {
       getListFileContent(urls)
     })
@@ -81,10 +87,15 @@ var getListFileContent = function (urls) {
     })
   )).then(function(response){
     Promise.all(response.map(value => {
+      var name = explode('-', value.file_name)
+      name = name[0]
+      // var name = name[0].substring(0, name[0].length - 4);
       content.push(
         {
           'fileName' : value.file_name,
-          'content' : value.content
+          'name' : name,
+          'content' : value.content,
+          'state': false
         }
       )
     })).then(response => {
@@ -100,32 +111,44 @@ var getListFileContents = function (contents) {
 
 var getListHosts = function (contents) {
   storage.get('getListFileContents', function(error, data) {
-    $.each(data, function (index, value) {
-      var name = value.fileName;
-      name = name.substring(0, name.length - 4);
-      var item = '<div class="row align-items-center items__hosts">'+
-        '<div class="col-3">'+
-        '<div class="togglebutton">'+
-        '<label class="title__hosts">'+
-        '<input data-fileName="'+value.fileName+'" type="checkbox" value="off">'+
-        '<div class="toggle"></div>'+
-        name
-        '</label>'+
-        '</div>'+
-        '</div>'+
-        '<div class="col-9">'+
-        '<h5 class="title__hosts mb-1"></h5>'+
-        '</div>'+
-        '</div>';
-      $('.HostsList').append(item);
-    });
+    // $('#HostsList').html(contents)
+    // sssss(data)
+    // console.log(data)
+    //   $.each(data, function (index, value) {
+    //     var name = value.fileName;
+    //     name = name.substring(0, name.length - 4);
+    //     var item = '<div class="row align-items-center items__hosts">'+
+    //       '<div class="col-3">'+
+    //       '<div class="togglebutton">'+
+    //       '<label class="title__hosts">'+
+    //       '<input data-fileName="'+value.fileName+'" type="checkbox" value="off">'+
+    //       '<div class="toggle"></div>'+
+    //       name
+    //       '</label>'+
+    //       '</div>'+
+    //       '</div>'+
+    //       '<div class="col-9">'+
+    //       '<h5 class="title__hosts mb-1"></h5>'+
+    //       '</div>'+
+    //       '</div>';
+    //     $('.HostsList').append(item);
+    //
+    //
+    // });
+
   });
 }
-
+// var sssss = function(contents) {
+//   console.log(contents)
+//   var arr = [contents]
+//   return arr
+// }
 var updateStorage = function(path, contents) {
   setListHosts()
 }
-
+var disableHost = function() {
+  Hosts.resetHost()
+}
 var enableHost = function(status, fileName) {
   var getFileContent = new Promise(function(resolve, reject) {
     var url = ApiUrl+'149/repository/files?file_path='+fileName+'&ref=master'
@@ -166,4 +189,47 @@ var saveOrigHosts = function(){
   })
 }
 
-export {setListHosts, getListHosts, enableHost, updateStorage, storage, saveOrigHosts }
+
+
+
+
+function explode( delimiter, string ) {	// Split a string by string
+	//
+	// +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+	// +   improved by: kenneth
+	// +   improved by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+
+	var emptyArray = { 0: '' };
+
+	if ( arguments.length != 2
+		|| typeof arguments[0] == 'undefined'
+		|| typeof arguments[1] == 'undefined' )
+	{
+		return null;
+	}
+
+	if ( delimiter === ''
+		|| delimiter === false
+		|| delimiter === null )
+	{
+		return false;
+	}
+
+	if ( typeof delimiter == 'function'
+		|| typeof delimiter == 'object'
+		|| typeof string == 'function'
+		|| typeof string == 'object' )
+	{
+		return emptyArray;
+	}
+
+	if ( delimiter === true ) {
+		delimiter = '1';
+	}
+
+	return string.toString().split ( delimiter.toString() );
+}
+
+
+
+export {setListHosts, getListHosts, enableHost, updateStorage, storage, saveOrigHosts, disableHost }

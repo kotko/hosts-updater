@@ -1,172 +1,107 @@
-const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage} = require('electron')
-const path = require('path')
+import { app, BrowserWindow, remote } from 'electron'
+const os = require('os');
 const storage = require('electron-json-storage');
-const { exec } = require('child_process');
-const assetsDirectory = path.join(__dirname, 'assets')
 
-
+storage.setDataPath(os.tmpdir());
+var sudo = require('sudo-prompt')
+var hosts =  '/etc/hosts'
+/**
+ * Set `__static` path to static files in production
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
+ */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static');
-}
-if (process.platform === 'linux' && ['Pantheon', 'Unity:Unity7'].indexOf(process.env.XDG_CURRENT_DESKTOP) !== -1) {
-  process.env.XDG_CURRENT_DESKTOP = 'Unity'
+  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
+let mainWindow
+const winURL = process.env.NODE_ENV === 'development'
+  ? `http://localhost:9080`
+  : `file://${__dirname}/index.html`
 
-// let tray = undefined
-let window = undefined
+function createWindow () {
+  /**
+   * Initial window options
+   */
+  mainWindow = new BrowserWindow({
+    height: 563,
+    useContentSize: true,
+    width: 1000
+  })
 
-// Don't show the app in the doc
-// if(process.platform == 'darwin'){
-  // app.dock.hide()
-// }
+  mainWindow.loadURL(winURL)
+
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+}
+
+app.on('ready', createWindow)
+
+app.on('window-all-closed', () => {
+  // resetHost()
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow()
+  }
+})
+
+
+
+
+var resetHost = function() {
+  var options = {name: 'electron sudo application'};
+
+  if(process.platform == 'darwin'){
+    var Sudoer = require('electron-sudo-mac').default;
+    var sudoer = new Sudoer(options);
+        storage.get('hostsOrig', function(error, data) {
+          var command = 'echo "'+data+'" > '+ hosts
+          sudoer.spawn(command, ['']).then(function (cp) {
+            cp.stdout.on('data', (msg) => {
+              console.log('Looks like we have a message on STDOUT');
+              // console.log(err.toString('utf8'));
+            });
+            cp.on('close',() => {
+              console.log('Processed Finished!');
+            });
+          })
+        });
+  }else{
+      storage.get('hostsOrig', function(error, data) {
+        var command = 'echo "'+data+'" > '+ hosts
+          sudo.exec(command, options,
+            function(error, stdout, stderr) {
+              if (error) throw error;
+              console.log('stdout: ' + stdout);
+            }
+          );
+      });
+  }
+}
+
+
+
+/**
+ * Auto Updater
+ *
+ * Uncomment the following code below and install `electron-updater` to
+ * support auto updating. Code Signing with a valid certificate is required.
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
+ */
+
+/*
+import { autoUpdater } from 'electron-updater'
+
+autoUpdater.on('update-downloaded', () => {
+  autoUpdater.quitAndInstall()
+})
 
 app.on('ready', () => {
-  createTray()
-  createWindow()
+  if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
 })
-
-// Quit the app when the window is closed
-app.on('window-all-closed', () => {
-  app.quit()
-})
-
-const createTray = () => {
-  var nameIcon = '';
-  var platform = process.platform;
-  // console.log(platform)
-  if(platform == 'darwin'){
-    nameIcon = '/png/16x16.png';
-    tray = new Tray(path.join(assetsDirectory, 'sunTemplate.png'))
-  }else{
-    const iconName = '16x16.png';
-  	const iconPath = path.join(assetsDirectory,'png',iconName);
- //should be "file", otherwise you are not pointing to your icon file
-  	let nimage = nativeImage.createFromPath(iconPath);
-    tray = new Tray(nimage)
-  }
-
-
-
-
-  const trayMenuTemplate = [
-              {
-                 label: 'Empty Application',
-                 enabled: false
-              },
-
-              {
-                 label: 'Settings',
-                 click: function () {
-                    console.log("Clicked on settings")
-                 }
-              },
-
-              {
-                 label: 'Help',
-                 click: function () {
-                    console.log("Clicked on Help")
-                 }
-              }
-           ]
-
-           let trayMenu = Menu.buildFromTemplate(trayMenuTemplate)
-           tray.setContextMenu(trayMenu)
-
-
-
-  tray.on('right-click', closeWindow)
-  tray.on('double-click', toggleWindow)
-  tray.on('click', function (event) {
-    toggleWindow()
-
-    // Show devtools when command clicked
-    if (window.isVisible() && process.defaultApp && event.metaKey) {
-      window.openDevTools({mode: 'detach'})
-    }
-  })
-}
-
-// const getWindowPosition = () => {
-//   const windowBounds = window.getBounds()
-//   const trayBounds = tray.getBounds()
-//
-//   // Center window horizontally below the tray icon
-//   const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2))
-//
-//   // Position window 4 pixels vertically below the tray icon
-//   const y = Math.round(trayBounds.y + trayBounds.height + 4)
-//
-//   return {x: x, y: y}
-// }
-
-const createWindow = () => {
-
-  window = new BrowserWindow({
-    width: 300,
-    height: 500,
-    minHeight: 300,
-    show: true,
-    frame: true,
-    // titleBarStyle: 'customButtonsOnHover',
-    icon: path.join(assetsDirectory, 'icons/png/64x64.png')
-    // show: false,
-    // frame: false,
-    // fullscreenable: false,
-    // resizable: true,
-    // transparent: true,
-    // webPreferences: {
-    //   // Prevents renderer process code from not running when window is
-    //   // hidden
-    //   backgroundThrottling: false
-    // }
-  })
-  const winURL = process.env.NODE_ENV === 'development'
-    ? `http://localhost:9080`
-    : `file://${__dirname}/index.html`
-  window.loadURL(winURL)
-
-  // Hide the window when it loses focus
-  window.on('blur', () => {
-    if (!window.webContents.isDevToolsOpened()) {
-      window.hide()
-    }
-  })
-}
-const closeWindow = () => {
-
-
-  // app.quit()
-
-
-
-}
-const toggleWindow = () => {
-  if (window.isVisible()) {
-    window.hide()
-  } else {
-    showWindow()
-  }
-}
-
-const showWindow = () => {
-  const position = getWindowPosition()
-  window.setPosition(position.x, position.y, false)
-  window.show()
-  window.focus()
-}
-
-ipcMain.on('show-window', () => {
-  showWindow()
-})
-
-// ipcMain.on('weather-updated', (event, weather) => {
-//   // Show "feels like" temperature in tray
-//   tray.setTitle(`${Math.round(weather.currently.apparentTemperature)}°`)
-//
-//   // Show summary and last refresh time as hover tooltip
-//   const time = new Date(weather.currently.time).toLocaleTimeString()
-//   tray.setToolTip(`${weather.currently.summary} at ${time}`)
-//
-//
-// })
+ */

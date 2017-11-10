@@ -8,10 +8,10 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
-import Test from './redmine'
+// import Test from './redmine'
+// const Test = require('./redmine')
 
-
-Test()
+// Test()
 if (!process.env.IS_WEB)
   Vue.use(require('vue-electron'))
 Vue.http = Vue.prototype.$http = axios
