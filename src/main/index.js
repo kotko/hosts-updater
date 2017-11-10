@@ -2,7 +2,7 @@ import { app, BrowserWindow, remote, Tray, nativeImage, Notification } from 'ele
 const path = require('path')
 const os = require('os');
 const storage = require('electron-json-storage');
-// const notify = require('electron-main-notification')
+const assetsDirectory = path.join(__dirname, 'assets')
 storage.setDataPath(os.tmpdir());
 var sudo = require('sudo-prompt')
 var hosts =  '/etc/hosts'
@@ -32,7 +32,7 @@ function createWindow () {
 
 
 
-  tray = new Tray( path.join(__static, 'sunTemplate.png'));
+  tray = new Tray( path.join(assetsDirectory, 'sunTemplate.png'));
   tray.on('right-click', toggleWindow)
   tray.on('double-click', toggleWindow)
   tray.on('click', function (event) {
@@ -48,12 +48,12 @@ function createWindow () {
 
   mainWindow = new BrowserWindow({
     width: 350,
-    // useContentSize: true,
+    useContentSize: true,
     minHeight: 400,
     "web-preferences": {
      "web-security": false
    },
-    icon: path.join(__static, 'sunTemplate.png')
+    icon: path.join(assetsDirectory, 'sunTemplate.png')
   })
 
   mainWindow.loadURL(winURL)
