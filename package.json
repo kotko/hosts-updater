@@ -26,7 +26,8 @@
     "build:mac": "electron-builder --mac",
     "build:win": "electron-builder --win",
     "dist": "electron-builder --dir",
-    "all": "electron-builder -mwl"
+    "all": "electron-builder -mwl",
+    "test": "node .electron-vue/build.js"
   },
   "build": {
     "productName": "test-project",
@@ -36,7 +37,9 @@
       "output": "build"
     },
     "files": [
-      "dist/electron/**/*"
+      "dist/electron",
+      "node_modules/",
+      "package.json"
     ],
     "dmg": {
       "contents": [
@@ -76,7 +79,7 @@
       ]
     },
     "linux": {
-      "icon": "build/icons",
+
       "category": "System",
       "target": [
         {

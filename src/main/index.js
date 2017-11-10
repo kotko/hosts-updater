@@ -10,7 +10,7 @@ let tray = undefined
 let mainWindow = undefined
 
 if(process.platform == 'darwin'){
-  app.dock.hide()
+  // app.dock.hide()
 }
 
 
@@ -30,9 +30,14 @@ const winURL = process.env.NODE_ENV === 'development'
 
 function createWindow () {
 
+  // const iconName = '16x16.png';
+  // const iconPath = path.join(assetsDirectory, '16x16.png')
+  // let nimage = nativeImage.createFromPath(iconPath);
+  tray = new Tray(`${__static}/png/16x16.png`);
 
 
-  tray = new Tray( path.join(assetsDirectory, 'sunTemplate.png'));
+
+  // tray = new Tray( path.join(assetsDirectory, 'sunTemplate.png'));
   tray.on('right-click', toggleWindow)
   tray.on('double-click', toggleWindow)
   tray.on('click', function (event) {
@@ -40,7 +45,7 @@ function createWindow () {
 
     // Show devtools when command clicked
     // if (window.isVisible() && process.defaultApp && event.metaKey) {
-      mainWindow.openDevTools({mode: 'detach'})
+      // mainWindow.openDevTools({mode: 'detach'})
     // }
   })
 
@@ -53,7 +58,7 @@ function createWindow () {
     "web-preferences": {
      "web-security": false
    },
-    icon: path.join(assetsDirectory, 'sunTemplate.png')
+    icon: `${__static}/png`
   })
 
   mainWindow.loadURL(winURL)
