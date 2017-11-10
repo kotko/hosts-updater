@@ -1,16 +1,18 @@
-import { app, BrowserWindow, remote, Tray, nativeImage } from 'electron'
+import { app, BrowserWindow, remote, Tray, nativeImage, Notification } from 'electron'
 const path = require('path')
 const os = require('os');
 const storage = require('electron-json-storage');
-
+// const notify = require('electron-main-notification')
 storage.setDataPath(os.tmpdir());
 var sudo = require('sudo-prompt')
 var hosts =  '/etc/hosts'
-const assetsDirectory = path.join(__dirname, 'assets')
-
-
 let tray = undefined
 let mainWindow = undefined
+
+if(process.platform == 'darwin'){
+  app.dock.hide()
+}
+
 
 
 /**
@@ -27,10 +29,10 @@ const winURL = process.env.NODE_ENV === 'development'
   : `file://${__dirname}/index.html`
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
-  tray = new Tray(path.join(assetsDirectory, 'app-icon.png'))
+
+
+
+  tray = new Tray( path.join(__static, 'sunTemplate.png'));
   tray.on('right-click', toggleWindow)
   tray.on('double-click', toggleWindow)
   tray.on('click', function (event) {
@@ -41,11 +43,17 @@ function createWindow () {
       mainWindow.openDevTools({mode: 'detach'})
     // }
   })
+
+  // tray = new Tray(path.join(assetsDirectory, 'app-icon.png'))
+
   mainWindow = new BrowserWindow({
-    height: 563,
-    useContentSize: true,
-    width: 1000,
-    icon: path.join(assetsDirectory, 'icons/png/64x64.png')
+    width: 350,
+    // useContentSize: true,
+    minHeight: 400,
+    "web-preferences": {
+     "web-security": false
+   },
+    icon: path.join(__static, 'sunTemplate.png')
   })
 
   mainWindow.loadURL(winURL)
@@ -85,8 +93,12 @@ const showWindow = () => {
 
 
 app.on('ready', () => {
-    createWindow()
+//   notify('This is a notification!', { body: 'See? Really easy to use!' }, () => {
 
+// })
+
+  createWindow()
+  showWindow()
 });
 
 app.on('window-all-closed', () => {

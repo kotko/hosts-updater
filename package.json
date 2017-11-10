@@ -22,11 +22,16 @@
     "test": "npm run unit && npm run e2e",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "mwl":" electron-builder --linux deb"
+    "build:linux": "electron-builder --linux deb",
+    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win",
+    "dist": "electron-builder --dir",
+    "all": "electron-builder -mwl"
   },
   "build": {
     "productName": "test-project",
     "appId": "org.simulatedgreg.electron-vue",
+
     "directories": {
       "output": "build"
     },
@@ -49,13 +54,38 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/icon.icns"
+      "icon": "build/icons/icon.icns",
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "win": {
-      "icon": "build/icons/icon.ico"
+      "icon": "build/icons/icon.ico",
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons",
+      "category": "System",
+      "target": [
+        {
+          "target": "dir",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     }
   },
   "dependencies": {
@@ -91,6 +121,8 @@
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.0",
     "electron-json-storage": "^4.0.2",
+    "electron-main-notification": "^1.0.1",
+    "electron-notify": "^0.1.0",
     "electron-storage": "^1.0.7",
     "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",

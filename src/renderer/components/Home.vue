@@ -1,5 +1,6 @@
 <template>
   <div id="wrapper">
+    <button type="button" class="btn" @click="updateStorage">test</button>
     <rowitems></rowitems>
   </div>
 </template>
@@ -7,13 +8,13 @@
 <script>
   import SystemInformation from './LandingPage/SystemInformation'
   import Rowitems from './LandingPage/Rowitems'
-
+  const Git = require('../../git')
   export default {
     name: 'home-page',
     components: { SystemInformation, Rowitems  },
     methods: {
-      open (link) {
-        // {{#isEnabled plugins 'vue-electron'}}this.$electron{{else}}require('electron'){{/isEnabled}}.shell.openExternal(link)
+      updateStorage: function(e) {
+        Git.updateStorage()
       }
     }
   }
