@@ -8,6 +8,7 @@
             <label class="title__hosts">
               <input :data-fileName="msg.fileName" :name="msg.name" :id="msg.name" :value="msg.fileName" type="checkbox"
               v-model="toggle"
+              v-on:input="checkboxVal = $event.target.value"
               v-bind:selected.sync="selectedMembers"
               @click="checkboxToggle"
               >
@@ -27,24 +28,25 @@
 const Git = require('../../../git')
 const os = require('os');
 const storage = require('electron-json-storage');
-
-storage.setDataPath(os.tmpdir());
 const sudo = require('sudo-prompt');
-// sudo.exec('echo hello', { name: 'Hosts'},
-//   function(error, stdout, stderr) {
-//     if (error) throw error;
-//     // storage.has('getListFileContents', function(error, hasKey) {
-//     //   if (error) throw error;
-//     //
-//     //   if (hasKey) {
-//     //     Git.getListHosts();
-//     //   }else{
-//     //
-//     //     Git.setListHosts();
-//     //   }
-//     // });
-//   }
-// );
+storage.setDataPath(os.tmpdir());
+Git.saveOrigHosts()
+if(process.platform == 'darwin'){
+  var Sudoer = require('electron-sudo-mac').default;
+  var options = {name: 'electron sudo sapplication'};
+  var sudoer = new Sudoer(options);
+  console.log(sudoer)
+  // sudoer.spawn('su', ['']).then(function (cp) {
+  //   cp.stdout.on('data', (msg) => {
+  //     console.log('Looks like we have a message on STDOUT');
+  //     console.log(msg)
+  //   });
+  //   cp.on('close',() => {
+  //       console.log('close')
+  //   });
+  // })
+}
+
 export default {
 
   data() {
@@ -55,12 +57,13 @@ export default {
         arrHosts: '',
         selected: [],
         allSelected: [],
-        userIds: []
+        userIds: [],
+        check: 0
       }
   },
   methods: {
     checkboxToggle: function(e) {
-      // console.log(this.toggle)
+
       this.toggle = []
 
     },
@@ -72,18 +75,42 @@ export default {
     }
   },
   watch: {// depth  watcher
+
    'toggle': {
+
      handler: function (val, oldVal) {
+       console.log('handler')
+       var this_ = this;
+
+       if(this_.check == 0){
        var filename = val[0]
        var status = true;
        if(filename == undefined){
          Git.disableHost()
        }else{
-         Git.enableHost(true, filename)
+         var enableHost = new Promise(function(resolve, reject) {
+            Git.enableHost(true, filename)
+            resolve(resolve)
+         })
+         enableHost.then(
+           result => {
+            //  storage.get('toggle-status', function(error, data) {
+            //    console.log(data)
+            //   // this_.toggle = ''
+            //   if(data != 'off'){
+            //     this_.toggle = []
+            //   }
+            //  });
+            //  this_.check = 0
+           },
+           error => alert("Rejected: " + error.message) // Rejected: время вышло!
+         )
+       }
        }
      },
      deep: true
-   }
+
+  }
   },
   created () {
 
@@ -94,7 +121,7 @@ export default {
     // });
 
 
-    Git.saveOrigHosts(),
+
     Git.setListHosts(),
 
     this.getProfile()
