@@ -1,4 +1,4 @@
-import { app, BrowserWindow, remote, Tray, nativeImage, Notification } from 'electron'
+import { app, BrowserWindow, remote, Menu, Tray, nativeImage, Notification } from 'electron'
 const path = require('path')
 const os = require('os');
 const storage = require('electron-json-storage');
@@ -55,17 +55,50 @@ function createWindow () {
     width: 350,
     useContentSize: true,
     minHeight: 400,
+    show: true,
     "web-preferences": {
      "web-security": false
    },
-    icon: `${__static}/png`
+    // icon: `${__static}/png`
   })
 
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
-    mainWindow = null
+    // mainWindow = null
   })
+
+
+
+
+  var contextMenu = Menu.buildFromTemplate([
+                  {
+                      label: 'Show App', click: function () {
+                          mainWindow.show();
+                      }
+                  },
+                  {
+                      label: 'Quit', click: function () {
+                          app.isQuiting = true;
+                          app.quit();
+
+                      }
+                  }
+              ])
+
+              tray.setContextMenu(contextMenu);
+              mainWindow.on('close', function (event) {
+                mainWindow = null
+              })
+              mainWindow.on('minimize', function (event) {
+                  event.preventDefault()
+                  mainWindow.hide();
+              })
+              mainWindow.on('show', function () {
+                  tray.setHighlightMode('always')
+              })
+
+
 }
 
 
@@ -78,19 +111,19 @@ const toggleWindow = () => {
   }
 }
 const showWindow = () => {
-  const trayPos = tray.getBounds()
-  const windowPos = mainWindow.getBounds()
-  let x, y = 0
-  if (process.platform == 'darwin') {
-    x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-    y = Math.round(trayPos.y + trayPos.height)
-  } else {
-    x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-    y = Math.round(trayPos.y + trayPos.height * 10)
-  }
-
-
-  mainWindow.setPosition(x, y, false)
+  // const trayPos = tray.getBounds()
+  // const windowPos = mainWindow.getBounds()
+  // let x, y = 0
+  // if (process.platform == 'darwin') {
+  //   x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
+  //   y = Math.round(trayPos.y + trayPos.height)
+  // } else {
+  //   x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
+  //   y = Math.round(trayPos.y + trayPos.height * 10)
+  // }
+  //
+  //
+  // mainWindow.setPosition(x, y, false)
   mainWindow.show()
   mainWindow.focus()
 }
@@ -105,7 +138,9 @@ app.on('ready', () => {
   createWindow()
   showWindow()
 });
-
+// mainWindow.on('ready-to-show', () => {
+//   mainWindow.show()
+// })
 app.on('window-all-closed', () => {
   // resetHost()
   if (process.platform !== 'darwin') {
