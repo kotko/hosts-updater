@@ -26,6 +26,12 @@
 </template>
 <script>
 // import { Notification } from 'electron'
+var Sudoer = require('electron-sudo-mac').default;
+let options = {name: 'electron sudo application'};
+var sudoer = new Sudoer(options);
+
+
+
 const path = require('path')
 const Git = require('../../../git')
 const os = require('os');
@@ -35,19 +41,26 @@ const assetsDirectory = path.join(__dirname, 'assets')
 storage.setDataPath(os.tmpdir());
 Git.saveOrigHosts()
 if(process.platform == 'darwin'){
-  var Sudoer = require('electron-sudo-mac').default;
-  var options = {name: 'electron sudo sapplication'};
-  var sudoer = new Sudoer(options);
-  console.log(sudoer)
-  // sudoer.spawn('su', ['']).then(function (cp) {
-  //   cp.stdout.on('data', (msg) => {
-  //     console.log('Looks like we have a message on STDOUT');
-  //     console.log(msg)
-  //   });
-  //   cp.on('close',() => {
-  //       console.log('close')
-  //   });
+  // var tests =  new Promise(function(resolve, reject) {
+  //   let cp = sudoer.spawn(
+  //     'su', ['']
+  //   );
+  //   if(cp){
+  //     resolve(cp)
+  //   }else{
+  //     reject(cp)
+  //   }
+  //
   // })
+  // tests.then(
+  //   result => {
+  //     console.log(result)
+  //
+  //   },
+  //   error => {
+  //     console.log(error)
+  //   }
+  // )
 }
 
 export default {
@@ -96,24 +109,15 @@ export default {
 
        if(this_.check == 0){
        var filename = val[0]
-       var status = true;
        if(filename == undefined){
-         Git.disableHost()
+         Git.disableHost(filename, 'reset')
        }else{
          var enableHost = new Promise(function(resolve, reject) {
-            Git.enableHost(true, filename)
+            Git.enableHost('enable', filename)
             resolve(resolve)
          })
          enableHost.then(
            result => {
-            //  storage.get('toggle-status', function(error, data) {
-            //    console.log(data)
-            //   // this_.toggle = ''
-            //   if(data != 'off'){
-            //     this_.toggle = []
-            //   }
-            //  });
-            //  this_.check = 0
            },
            error => alert("Rejected: " + error.message) // Rejected: время вышло!
          )

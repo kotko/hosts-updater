@@ -146,8 +146,8 @@ var getListHosts = function (contents) {
 var updateStorage = function(path, contents) {
   setListHosts()
 }
-var disableHost = function() {
-  Hosts.resetHost()
+var disableHost = function(fileName, status) {
+  Hosts.resetHost(fileName, status)
 }
 var enableHost = function(status, fileName) {
   var getFileContent = new Promise(function(resolve, reject) {

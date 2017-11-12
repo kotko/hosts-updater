@@ -1,8 +1,10 @@
-import { app, BrowserWindow, remote, Menu, Tray, nativeImage, Notification } from 'electron'
+import { app, BrowserWindow, Menu, Tray } from 'electron'
 const path = require('path')
 const os = require('os');
+const { exec } = require('child_process');
 const storage = require('electron-json-storage');
 const assetsDirectory = path.join(__dirname, 'assets')
+const {session} = require('electron')
 storage.setDataPath(os.tmpdir());
 var sudo = require('sudo-prompt')
 var hosts =  '/etc/hosts'
@@ -62,6 +64,7 @@ function createWindow () {
     // icon: `${__static}/png`
   })
 
+
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
@@ -97,7 +100,8 @@ function createWindow () {
               mainWindow.on('show', function () {
                   tray.setHighlightMode('always')
               })
-
+              // const ses = mainWindow.webContents.session
+              // console.log(ses.getUserAgent())
 
 }
 
