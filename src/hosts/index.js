@@ -12,17 +12,9 @@ if(process.platform == 'win32'){
 
 storage.setDataPath(os.tmpdir())
 
-
-
 var Sudoer = require('electron-sudo-mac').default;
 let options = {name: 'electron sudo application'};
 var sudoer = new Sudoer(options);
-
-
-// const ses = session.fromPartition('testproject')
-// console.log(ses.getUserAgent())
-var tsest =''
-
 
 
 const config = {
@@ -30,11 +22,6 @@ const config = {
   'options' : 'Hosts updater',
   'name' : 'Hosts updater'
 }
-var spawn = require('child_process').exec;
-
-
-
-var shshs = ''
 
 var changeFile = function(content, fileName, status) {
   var command = 'echo "'+content+'" > '+ config.hosts
@@ -42,10 +29,10 @@ var changeFile = function(content, fileName, status) {
       if(err) {
         console.log(err)
       } else {
-
-          var notification = new Notification('Hosts updater', {
-             body: fileName+ " "+status,
-          })
+        fileName = fileName.substring(0, fileName.length - 4);
+        var notification = new Notification('Hosts updater', {
+           body: fileName+ " "+status,
+        })
       }
   })
 

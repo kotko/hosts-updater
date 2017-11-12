@@ -1,6 +1,6 @@
 <template>
   <div id="wrapper">
-    <button type="button" class="btn" @click="updateStorage">test</button>
+    <!-- <button type="input" class="btn" @click="updateStorage">test</button> -->
     <rowitems></rowitems>
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
   <form>
-
     <div class="row">
       <div class="row align-items-center items__hosts" v-for="msg in arrHosts">
         <div class="col-3">
@@ -13,7 +12,7 @@
               @click="checkboxToggle"
               >
               <div class="toggle"></div>
-              {{ msg.fileName }}
+              {{ msg.name }}
             </label>
           </div>
         </div>
@@ -129,20 +128,21 @@ export default {
   }
   },
   created () {
-
     // storage.getAll(function(error, data) {
     // if (error) throw error;
     //
     // console.log(data);
     // });
-
-
-
-    Git.setListHosts(),
-
-    this.getProfile()
-
-
+    new Promise(function(resolve, reject) {
+        resolve(Git.setListHosts())
+    }).then(
+      resolve => {
+        this.getProfile()
+      },
+      error => {
+        console.log(error)
+      }
+    )
   },
 }
 </script>

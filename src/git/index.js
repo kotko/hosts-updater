@@ -88,12 +88,14 @@ var getListFileContent = function (urls) {
   )).then(function(response){
     Promise.all(response.map(value => {
       var name = explode('-', value.file_name)
-      name = name[0]
-      // var name = name[0].substring(0, name[0].length - 4);
+      var fullName = name[0];
+      // name = name[0]
+      var ip = name[1].substring(0, name[1].length - 4);
+
       content.push(
         {
           'fileName' : value.file_name,
-          'name' : name,
+          'name' : fullName+ '-' + ip,
           'content' : value.content,
           'state': false
         }

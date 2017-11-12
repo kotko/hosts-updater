@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, Tray } from 'electron'
 const path = require('path')
 const os = require('os');
+
 const { exec } = require('child_process');
 const storage = require('electron-json-storage');
 const assetsDirectory = path.join(__dirname, 'assets')
@@ -58,13 +59,14 @@ function createWindow () {
     useContentSize: true,
     minHeight: 400,
     show: true,
+    frame: false,
     "web-preferences": {
      "web-security": false
    },
     // icon: `${__static}/png`
   })
 
-
+  
   mainWindow.loadURL(winURL)
 
   mainWindow.on('closed', () => {
@@ -115,19 +117,23 @@ const toggleWindow = () => {
   }
 }
 const showWindow = () => {
-  // const trayPos = tray.getBounds()
-  // const windowPos = mainWindow.getBounds()
-  // let x, y = 0
-  // if (process.platform == 'darwin') {
-  //   x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-  //   y = Math.round(trayPos.y + trayPos.height)
-  // } else {
-  //   x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-  //   y = Math.round(trayPos.y + trayPos.height * 10)
-  // }
-  //
-  //
-  // mainWindow.setPosition(x, y, false)
+
+  if(process.platform == 'darwin'){
+    const trayPos = tray.getBounds()
+    const windowPos = mainWindow.getBounds()
+    let x, y = 0
+    if (process.platform == 'darwin') {
+      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
+      y = Math.round(trayPos.y + trayPos.height)
+    } else {
+      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
+      y = Math.round(trayPos.y + trayPos.height * 10)
+    }
+
+
+    mainWindow.setPosition(x, y, false)
+  }
+
   mainWindow.show()
   mainWindow.focus()
 }
@@ -161,36 +167,36 @@ app.on('activate', () => {
 
 
 
-var resetHost = function() {
-  var options = {name: 'electron sudo application'};
-
-  if(process.platform == 'darwin'){
-    var Sudoer = require('electron-sudo-mac').default;
-    var sudoer = new Sudoer(options);
-        storage.get('hostsOrig', function(error, data) {
-          var command = 'echo "'+data+'" > '+ hosts
-          sudoer.spawn(command, ['']).then(function (cp) {
-            cp.stdout.on('data', (msg) => {
-              console.log('Looks like we have a message on STDOUT');
-              // console.log(err.toString('utf8'));
-            });
-            cp.on('close',() => {
-              console.log('Processed Finished!');
-            });
-          })
-        });
-  }else{
-      storage.get('hostsOrig', function(error, data) {
-        var command = 'echo "'+data+'" > '+ hosts
-          sudo.exec(command, options,
-            function(error, stdout, stderr) {
-              if (error) throw error;
-              console.log('stdout: ' + stdout);
-            }
-          );
-      });
-  }
-}
+// var resetHost = function() {
+//   var options = {name: 'electron sudo application'};
+//
+//   if(process.platform == 'darwin'){
+//     var Sudoer = require('electron-sudo-mac').default;
+//     var sudoer = new Sudoer(options);
+//         storage.get('hostsOrig', function(error, data) {
+//           var command = 'echo "'+data+'" > '+ hosts
+//           sudoer.spawn(command, ['']).then(function (cp) {
+//             cp.stdout.on('data', (msg) => {
+//               console.log('Looks like we have a message on STDOUT');
+//               // console.log(err.toString('utf8'));
+//             });
+//             cp.on('close',() => {
+//               console.log('Processed Finished!');
+//             });
+//           })
+//         });
+//   }else{
+//       storage.get('hostsOrig', function(error, data) {
+//         var command = 'echo "'+data+'" > '+ hosts
+//           sudo.exec(command, options,
+//             function(error, stdout, stderr) {
+//               if (error) throw error;
+//               console.log('stdout: ' + stdout);
+//             }
+//           );
+//       });
+//   }
+// }
 
 
 
