@@ -57,20 +57,10 @@ win.loadURL(winURL)
 
 // autoUpdater.allowDowngrade = true;
 
-
-
-// autoUpdater.setFeedURL({
-//   "provider": "github",
-//   "owner": "kotko",
-//   "repo": "hosts-updater",
-//   "token": "ee474e0574b23b186be1fb8124413e4b5c4e55c6"
-// });
 }
 app.on('ready', function()  {
   createWindow()
   showWindow()
-
-
 });
 app.on('activate', () => {
   if (win === null) {
@@ -127,8 +117,8 @@ autoUpdater.on('download-progress', (progressObj) => {
 let log_message = "Download speed: " + progressObj.bytesPerSecond;
 log_message = (progressObj && progressObj.percent) ? progressObj.percent / 100 : -1
 sendStatusToWindow(log_message);
-// let code = `document.getElementById("demo").innerHTML = ${log_message};`;
-//    win.webContents.executeJavaScript(code);
+let code = `document.getElementById("demo").innerHTML = ${log_message};`;
+   win.webContents.executeJavaScript(code);
 });
 autoUpdater.on('update-downloaded', (ev, info) => {
 sendStatusToWindow('Update downloaded; will install in 5 seconds');
