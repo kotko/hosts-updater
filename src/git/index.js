@@ -184,8 +184,12 @@ var setHost = function(fileName, status, filePath, content) {
 }
 
 var saveOrigHosts = function(){
-  fs.readFile('/etc/hosts', 'utf8', function (err,data) {
-    storage.set('hostsOrig', data, function(error) {
+  var hosts =  '/etc/hosts'
+  if(process.platform == 'win32'){
+   hosts = 'C:\\Windows\\System32\\drivers\\etc\\hosts'
+  }
+  fs.readFile(hosts, 'utf8', function (err,data) {
+    storage.set('hostsOriginal', data, function(error) {
       if (error) throw error;
     });
   })

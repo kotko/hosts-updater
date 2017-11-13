@@ -1,53 +1,54 @@
-const { dialog } = require('electron')
-const { autoUpdater } = require('electron-updater')
-const appVersion = '0.0.3';
-let updater
-autoUpdater.autoDownload = false
-
-autoUpdater.on('error', (event, error) => {
-  dialog.showErrorBox('Error: ', error == null ? "unknown" : (error.stack || error).toString())
-})
-
-autoUpdater.on('update-available', () => {
-  dialog.showMessageBox({
-    type: 'info',
-    title: 'Found Updates',
-    message: 'Found updates, do you want update now?',
-    buttons: ['Sure', 'No']
-  }, (buttonIndex) => {
-    if (buttonIndex === 0) {
-      autoUpdater.downloadUpdate()
-    }
-    else {
-      updater.enabled = true
-      updater = null
-    }
-  })
-})
-
-autoUpdater.on('update-not-available', () => {
-  dialog.showMessageBox({
-    title: 'No Updates',
-    message: 'Current version is up-to-date.'
-  })
-  updater.enabled = true
-  updater = null
-})
-
-autoUpdater.on('update-downloaded', () => {
-  dialog.showMessageBox({
-    title: 'Install Updates',
-    message: 'Updates downloaded, application will be quit for update...'
-  }, () => {
-    setImmediate(() => autoUpdater.quitAndInstall())
-  })
-})
-
-// export this to MenuItem click callback
-function checkForUpdates (menuItem, focusedWindow, event) {
-  updater = menuItem
-  updater.enabled = false
-  autoUpdater.checkForUpdates()
-}
-
-module.exports.checkForUpdates = checkForUpdates
+// const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, ipcRenderer, dialog} = require('electron');
+// let {autoUpdater} = require("electron-updater");
+//
+//
+// function sendStatusToWindow(text) {
+//   let title = win.getTitle();
+//   console.log(title)
+// }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// ipcMain.on('update-title',(event,title)=>{
+// win.setTitle(title);
+// });
+//
+// app.on('window-all-closed', () => {
+// app.quit()
+// });
+//
+// autoUpdater.on('checking-for-update', () => {
+// sendStatusToWindow('Checking for update...');
+// });
+// autoUpdater.on('update-available', (ev, info) => {
+// sendStatusToWindow('Update available.');
+// });
+// autoUpdater.on('update-not-available', (ev, info) => {
+// sendStatusToWindow('Update not available.');
+// });
+// autoUpdater.on('error', (ev, err) => {
+// sendStatusToWindow('Error in auto-updater.:'+err);
+// process.stdout.write(ev,err);
+// });
+// autoUpdater.on('download-progress', (progressObj) => {
+// let log_message = "Download speed: " + progressObj.bytesPerSecond;
+// log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+// log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+// sendStatusToWindow(log_message);
+// });
+// autoUpdater.on('update-downloaded', (ev, info) => {
+// sendStatusToWindow('Update downloaded; will install in 5 seconds');
+// setTimeout(function() {
+// autoUpdater.quitAndInstall();
+// }, 5000)
+// });
+// var autoUpdate = function(){
+//   autoUpdater.checkForUpdates();
+// }
+// export {autoUpdate}

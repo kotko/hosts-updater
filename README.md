@@ -1,4 +1,4 @@
-# test-project
+# hosts-updater
 
 > desc
 

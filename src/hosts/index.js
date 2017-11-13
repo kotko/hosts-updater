@@ -24,22 +24,33 @@ const config = {
 }
 
 var changeFile = function(content, fileName, status) {
-  var command = 'echo "'+content+'" > '+ config.hosts
-  fs.writeFile(config.hosts, content, function(err) {
-      if(err) {
-        console.log(err)
-      } else {
-        fileName = fileName.substring(0, fileName.length - 4);
-        var notification = new Notification('Hosts updater', {
-           body: fileName+ " "+status,
-        })
-      }
-  })
+  var command = ''
+  storage.get('hostsOriginal', function(error, data) {
+    fs.writeFile(config.hosts, data+' '+content, function(err) {
+        if(err) {
+          console.log(err) 
+        } else {
+          fileName = fileName.substring(0, fileName.length - 4);
+          var notification = new Notification('Hosts updater', {
+             body: fileName+ " "+status,
+          })
+        }
+    })
+  });
 
 }
 var resetHost = function(fileName, status) {
-  storage.get('hostsOrig', function(error, data) {
-    changeFile(data, fileName, status)
+  storage.get('hostsOriginal', function(error, data) {
+    fs.writeFile(config.hosts, data, function(err) {
+        if(err) {
+          console.log(err)
+        } else {
+          fileName = fileName.substring(0, fileName.length - 4);
+          var notification = new Notification('Hosts updater', {
+             body: fileName+ " "+'reset',
+          })
+        }
+    })
   });
 }
 var write = function(fileName, status, path, contents) {

@@ -138,6 +138,10 @@ export default {
     }).then(
       resolve => {
         this.getProfile()
+
+        storage.get('hostsOriginal', function(error, data) {
+          console.log(data)
+        });
       },
       error => {
         console.log(error)

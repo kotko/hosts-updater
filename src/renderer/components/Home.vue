@@ -9,13 +9,20 @@
   import SystemInformation from './LandingPage/SystemInformation'
   import Rowitems from './LandingPage/Rowitems'
   const Git = require('../../git')
+  // const Update = require('../updater.js')
   export default {
     name: 'home-page',
     components: { SystemInformation, Rowitems  },
     methods: {
       updateStorage: function(e) {
+        console.log('Update')
+        // Update.autoUpdate()
         Git.updateStorage()
       }
+    },
+    created () {
+      this.updateStorage()
+      // Update.autoUpdate()
     }
   }
 </script>

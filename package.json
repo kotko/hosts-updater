@@ -1,9 +1,9 @@
 {
   "name": "hosts-update",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kotko/hosts-updater.git"
+    "url": "http://git.slm.ua/kotko/hosts-updater.git"
   },
   "author": "Vladislav Kotko <kotko.v@sld.kiev.ua>",
   "description": "desc",
@@ -36,16 +36,16 @@
   },
   "build": {
     "productName": "hosts-update",
-    "buildVersion": "0.0.7",
+    "buildVersion": "0.0.8",
     "appId": "com.kotko.hosts-update",
     "directories": {
       "output": "build"
     },
     "publish": [
       {
-        "provider": "github",
+        "provider": "gitlub",
         "owner": "kotko",
-        "token": "8e6ad3968461ad1e7ce50e088a07db2116f99a5b",
+        "token": "eyHfiUriPqCzPc_55bxt",
         "releaseType" : "release",
         "vPrefixedTagName": true
       }
@@ -78,16 +78,13 @@
       "target": [ "dmg", "zip"],
       "category": "public.app-category.reference"
     },
-    "squirrelWindows" :{
-      "msi": true,
-      "remoteToken" : "8e6ad3968461ad1e7ce50e088a07db2116f99a5b"
-    },
+
     "win": {
       "icon": "build/icons/icon.ico",
       "publish": [
         "github"
       ],
-      "target": [ "squirrel", "nsis-web", "zip"]
+      "target": ["nsis-web", "zip"]
     },
     "linux": {
       "category": "System",
