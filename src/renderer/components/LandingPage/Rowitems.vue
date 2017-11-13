@@ -24,10 +24,7 @@
   </form>
 </template>
 <script>
-// import { Notification } from 'electron'
-var Sudoer = require('electron-sudo-mac').default;
-let options = {name: 'electron sudo application'};
-var sudoer = new Sudoer(options);
+
 
 
 
@@ -35,7 +32,6 @@ const path = require('path')
 const Git = require('../../../git')
 const os = require('os');
 const storage = require('electron-json-storage');
-const sudo = require('sudo-prompt');
 const assetsDirectory = path.join(__dirname, 'assets')
 storage.setDataPath(os.tmpdir());
 Git.saveOrigHosts()

@@ -2,7 +2,6 @@
 // const remote = require('electron')
 const os = require('os')
 const storage = require('electron-json-storage')
-const sudo = require('sudo-prompt')
 const fs = require('fs')
 const { exec } = require('child_process')
 var hosts =  '/etc/hosts'
@@ -12,9 +11,6 @@ if(process.platform == 'win32'){
 
 storage.setDataPath(os.tmpdir())
 
-var Sudoer = require('electron-sudo-mac').default;
-let options = {name: 'electron sudo application'};
-var sudoer = new Sudoer(options);
 
 
 const config = {
@@ -28,7 +24,7 @@ var changeFile = function(content, fileName, status) {
   storage.get('hostsOriginal', function(error, data) {
     fs.writeFile(config.hosts, data+' '+content, function(err) {
         if(err) {
-          console.log(err) 
+          console.log(err)
         } else {
           fileName = fileName.substring(0, fileName.length - 4);
           var notification = new Notification('Hosts updater', {

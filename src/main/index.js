@@ -61,14 +61,13 @@ win.loadURL(winURL)
 
 
 
-autoUpdater.setFeedURL({
-  "provider": "github",
-  "owner": "kotko",
-  "repo": "hosts-updater",
-  "token": "f39e4a531cd65123f2af4419974b9d184ce410bd",
-  "releaseType": "release",
-  "vPrefixedTagName": true
-});
+// autoUpdater.setFeedURL({
+//   "provider": "github",
+//   "owner": "kotko",
+//   "repo": "hosts-updater",
+//   "token": "ee474e0574b23b186be1fb8124413e4b5c4e55c6"
+//
+// });
 }
 app.on('ready', function()  {
   createWindow()
@@ -141,3 +140,4 @@ autoUpdater.quitAndInstall();
 }, 5000)
 });
 autoUpdater.checkForUpdates();
+//

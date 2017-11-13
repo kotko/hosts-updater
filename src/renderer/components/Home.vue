@@ -3,6 +3,7 @@
     <p id="demo"></p>
     <!-- <button type="input" class="btn" @click="updateStorage">test</button> -->
     <rowitems></rowitems>
+    <div style="text-align:right" id="version">v{{version}}</div>
   </div>
 </template>
 
@@ -16,6 +17,11 @@
   export default {
     name: 'home-page',
     components: { SystemInformation, Rowitems  },
+    data(){
+      return {
+        version: ''
+      }
+    },
     methods: {
       updateStorage: function(e) {
         Git.updateStorage()
@@ -23,6 +29,8 @@
     },
     created () {
       this.updateStorage()
+      var appVersion = require('electron').remote.app.getVersion()
+      this.version = appVersion
     }
   }
 </script>
