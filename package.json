@@ -1,9 +1,9 @@
 {
   "name": "hosts-update",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "repository": {
     "type": "git",
-    "url": "http://git.slm.ua/kotko/hosts-updater.git"
+    "url": "https://github.com/kotko/hosts-updater.git"
   },
   "author": "Vladislav Kotko <kotko.v@sld.kiev.ua>",
   "description": "desc",
@@ -36,17 +36,17 @@
   },
   "build": {
     "productName": "hosts-update",
-    "buildVersion": "0.0.8",
+    "buildVersion": "0.1.0",
     "appId": "com.kotko.hosts-update",
     "directories": {
       "output": "build"
     },
     "publish": [
       {
-        "provider": "gitlub",
+        "provider": "github",
         "owner": "kotko",
-        "token": "eyHfiUriPqCzPc_55bxt",
-        "releaseType" : "release",
+        "token": "04c8cc8dad39feff57a4598d4ea5441d3fbd7e38",
+        "releaseType": "release",
         "vPrefixedTagName": true
       }
     ],
@@ -75,16 +75,25 @@
       "publish": [
         "github"
       ],
-      "target": [ "dmg", "zip"],
+      "target": [
+        "dmg",
+        "zip"
+      ],
       "category": "public.app-category.reference"
     },
-
+    "squirrelWindows": {
+      "msi": true,
+      "remoteToken": "04c8cc8dad39feff57a4598d4ea5441d3fbd7e38"
+    },
     "win": {
       "icon": "build/icons/icon.ico",
       "publish": [
         "github"
       ],
-      "target": ["nsis-web", "zip"]
+      "target": [
+        "nsis-web",
+        "zip"
+      ]
     },
     "linux": {
       "category": "System",
@@ -102,8 +111,8 @@
     }
   },
   "dependencies": {
-    "vue": "^2.3.3",
     "axios": "^0.16.1",
+    "vue": "^2.3.3",
     "vue-electron": "^1.0.6",
     "vue-router": "^2.5.3",
     "vuex": "^2.3.1"
@@ -138,8 +147,9 @@
     "electron-main-notification": "^1.0.1",
     "electron-notify": "^0.1.0",
     "electron-storage": "^1.0.7",
-    "eslint": "^4.4.1",
+    "electron-traywindow-positioner": "0.0.1",
     "electron-updater": "2.16.1",
+    "eslint": "^4.4.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.9.0",

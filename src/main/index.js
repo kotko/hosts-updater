@@ -1,18 +1,20 @@
-const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, ipcRenderer, dialog, contents, webContents, document} = require('electron');
+const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, ipcRenderer, dialog} = require('electron');
+const path = require('path')
 let {autoUpdater} = require("electron-updater");
+let tray = undefined
+let win = null;
+const positioner = require('electron-traywindow-positioner');
 
 
-
-
-
+/**
+ * Set `__static` path to static files in production
+ * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
+ */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\')
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\')
 }
 
 
-
-
-let win = null;
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -54,13 +56,16 @@ function createWindow () {
 win.loadURL(winURL)
 
 
-autoUpdater.allowDowngrade = true;
-// autoUpdater.setFeedURL({
-//   "provider": "github",
-//   "owner": "kotko",
-//   "repo": "hosts-updater",
-//   "token": "8e6ad3968461ad1e7ce50e088a07db2116f99a5b"
-// });
+// autoUpdater.allowDowngrade = true;
+
+
+
+autoUpdater.setFeedURL({
+  "provider": "github",
+  "owner": "kotko",
+  "repo": "hosts-updater",
+  "token": "04c8cc8dad39feff57a4598d4ea5441d3fbd7e38"
+});
 }
 app.on('ready', function()  {
   createWindow()
@@ -82,28 +87,19 @@ const toggleWindow = () => {
     showWindow()
   }
 }
+
+
+
 const showWindow = () => {
-
-  // if(process.platform == 'darwin'){
-    const trayPos = tray.getBounds()
-    const windowPos = win.getBounds()
-    let x, y = 0
-    if (process.platform == 'darwin') {
-      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-      y = Math.round(trayPos.y + trayPos.height)
-    } else {
-      x = Math.round(trayPos.x + (trayPos.width / 2) - (windowPos.width / 2))
-      y = Math.round(trayPos.y + trayPos.height * 10)
-    }
-
-
-    win.setPosition(x, y, false)
-  // }
+  const rectangle =  tray.getBounds()
+  var tesst = positioner.calculate(win.getBounds(), tray.getBounds());
+  win.setPosition(tesst.x, tesst.y, false)
+  // console.log(tesst)
+  // positioner.position(win,rectangle);
 
   win.show()
   win.focus()
 }
-
 
 
 
@@ -116,15 +112,6 @@ win.setTitle(title);
 app.on('window-all-closed', () => {
 app.quit()
 });
-
-autoUpdater.requestHeaders = { "PRIVATE-TOKEN": "eyHfiUriPqCzPc_55bxt" };
-autoUpdater.autoDownload = true;
-
-autoUpdater.setFeedURL({
-    provider: "generic",
-    url: "http://git.slm.ua/kotko/hosts-updater/jobs/artifacts/master/raw/dist?job=build"
-});
-
 
 autoUpdater.on('checking-for-update', () => {
 sendStatusToWindow('Checking for update...');
