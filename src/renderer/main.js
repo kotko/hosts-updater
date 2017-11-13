@@ -8,6 +8,9 @@ import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
+// import autoUpdater from './updater.js'
+// const appVersion = '0.0.3';
+
 
 
 // Change config options

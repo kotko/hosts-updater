@@ -1,9 +1,13 @@
 {
-  "name": "test-project",
-  "version": "0.0.0",
+  "name": "hosts-update",
+  "version": "0.0.7",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kotko/hosts-updater.git"
+  },
   "author": "Vladislav Kotko <kotko.v@sld.kiev.ua>",
   "description": "desc",
-  "license": null,
+  "license": "MIT",
   "main": "./dist/electron/main.js",
   "allowRootDirectory": true,
   "allowAnywhere": true,
@@ -19,7 +23,7 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "test": "npm run unit && npm run e2e",
+    "test": "node .electron-vue/build.js",
     "unit": "karma start test/unit/karma.conf.js",
     "postinstall": "npm run lint:fix",
     "build:linux": "electron-builder --linux deb",
@@ -27,15 +31,25 @@
     "build:win": "electron-builder --win",
     "dist": "electron-builder --dir",
     "all": "electron-builder -mwl",
-    "test": "node .electron-vue/build.js"
+    "publish": "build -mwl -p always",
+    "publish:mac": "build --mac -p always"
   },
   "build": {
-    "productName": "test-project",
-    "appId": "org.simulatedgreg.electron-vue",
-
+    "productName": "hosts-update",
+    "buildVersion": "0.0.7",
+    "appId": "com.kotko.hosts-update",
     "directories": {
       "output": "build"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "kotko",
+        "token": "8e6ad3968461ad1e7ce50e088a07db2116f99a5b",
+        "releaseType" : "release",
+        "vPrefixedTagName": true
+      }
+    ],
     "files": [
       "dist/electron",
       "node_modules/",
@@ -58,29 +72,28 @@
     },
     "mac": {
       "icon": "build/icons/icon.icns",
-      "target": [
-        {
-          "target": "dir",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
+      "publish": [
+        "github"
+      ],
+      "target": [ "dmg", "zip"],
+      "category": "public.app-category.reference"
+    },
+    "squirrelWindows" :{
+      "msi": true,
+      "remoteToken" : "8e6ad3968461ad1e7ce50e088a07db2116f99a5b"
     },
     "win": {
       "icon": "build/icons/icon.ico",
-      "target": [
-        {
-          "target": "dir",
-          "arch": [
-            "x64"
-          ]
-        }
-      ]
+      "publish": [
+        "github"
+      ],
+      "target": [ "squirrel", "nsis-web", "zip"]
     },
     "linux": {
-
       "category": "System",
+      "publish": [
+        "github"
+      ],
       "target": [
         {
           "target": "dir",
@@ -119,15 +132,17 @@
     "css-loader": "^0.28.4",
     "del": "^3.0.0",
     "devtron": "^1.4.0",
-    "electron": "^1.7.5",
+    "electron": "^1.7.9",
     "electron-builder": "^19.19.1",
     "electron-debug": "^1.4.0",
     "electron-devtools-installer": "^2.2.0",
     "electron-json-storage": "^4.0.2",
+    "electron-log": "^2.2.11",
     "electron-main-notification": "^1.0.1",
     "electron-notify": "^0.1.0",
     "electron-storage": "^1.0.7",
     "eslint": "^4.4.1",
+    "electron-updater": "2.16.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-friendly-formatter": "^3.0.0",
     "eslint-loader": "^1.9.0",
