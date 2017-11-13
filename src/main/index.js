@@ -65,7 +65,9 @@ autoUpdater.setFeedURL({
   "provider": "github",
   "owner": "kotko",
   "repo": "hosts-updater",
-  "token": "04c8cc8dad39feff57a4598d4ea5441d3fbd7e38"
+  "token": "f39e4a531cd65123f2af4419974b9d184ce410bd",
+  "releaseType": "release",
+  "vPrefixedTagName": true
 });
 }
 app.on('ready', function()  {

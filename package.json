@@ -1,6 +1,6 @@
 {
   "name": "hosts-update",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/kotko/hosts-updater.git"
@@ -36,20 +36,12 @@
   },
   "build": {
     "productName": "hosts-update",
-    "buildVersion": "0.1.1",
+    "buildVersion": "0.1.2",
     "appId": "com.kotko.hosts-update",
     "directories": {
       "output": "build"
     },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "kotko",
-        "token": "04c8cc8dad39feff57a4598d4ea5441d3fbd7e38",
-        "releaseType": "release",
-        "vPrefixedTagName": true
-      }
-    ],
+
     "files": [
       "dist/electron",
       "node_modules/",
