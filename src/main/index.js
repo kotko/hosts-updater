@@ -1,4 +1,4 @@
-const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, ipcRenderer, dialog} = require('electron');
+const {app, BrowserWindow, ipcMain, Tray, Menu, nativeImage, ipcRenderer, dialog, webContents} = require('electron');
 const path = require('path')
 let {autoUpdater} = require("electron-updater");
 let tray = undefined
@@ -31,7 +31,7 @@ function sendStatusToWindow(text) {
 function createWindow () {
   tray = new Tray(`${__static}/png/16x16.png`);
   tray.on('right-click', toggleWindow)
-  tray.on('double-click', toggleWindow)
+  tray.on('double-clicnk', toggleWindow)
   tray.on('click', function (event) {
     toggleWindow()
 
@@ -53,6 +53,7 @@ function createWindow () {
     // icon: `${__static}/png`
   })
 // win.maximize();
+// win.setProgressBar(0.40[, {'modeСтрока':'normal'}])
 win.loadURL(winURL)
 
 
@@ -70,6 +71,7 @@ autoUpdater.setFeedURL({
 app.on('ready', function()  {
   createWindow()
   showWindow()
+
 
 });
 app.on('activate', () => {
@@ -94,9 +96,6 @@ const showWindow = () => {
   const rectangle =  tray.getBounds()
   var tesst = positioner.calculate(win.getBounds(), tray.getBounds());
   win.setPosition(tesst.x, tesst.y, false)
-  // console.log(tesst)
-  // positioner.position(win,rectangle);
-
   win.show()
   win.focus()
 }
@@ -128,9 +127,10 @@ process.stdout.write(ev,err);
 });
 autoUpdater.on('download-progress', (progressObj) => {
 let log_message = "Download speed: " + progressObj.bytesPerSecond;
-log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+log_message = (progressObj && progressObj.percent) ? progressObj.percent / 100 : -1
 sendStatusToWindow(log_message);
+let code = `document.getElementById("demo").innerHTML = ${log_message};`;
+   win.webContents.executeJavaScript(code);
 });
 autoUpdater.on('update-downloaded', (ev, info) => {
 sendStatusToWindow('Update downloaded; will install in 5 seconds');

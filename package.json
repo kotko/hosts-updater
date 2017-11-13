@@ -1,6 +1,6 @@
 {
   "name": "hosts-update",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/kotko/hosts-updater.git"
@@ -36,7 +36,7 @@
   },
   "build": {
     "productName": "hosts-update",
-    "buildVersion": "0.1.0",
+    "buildVersion": "0.1.1",
     "appId": "com.kotko.hosts-update",
     "directories": {
       "output": "build"

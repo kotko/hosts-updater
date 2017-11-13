@@ -103,7 +103,6 @@ export default {
    'toggle': {
 
      handler: function (val, oldVal) {
-       console.log('handler')
        var this_ = this;
 
        if(this_.check == 0){
@@ -138,10 +137,6 @@ export default {
     }).then(
       resolve => {
         this.getProfile()
-
-        storage.get('hostsOriginal', function(error, data) {
-          console.log(data)
-        });
       },
       error => {
         console.log(error)

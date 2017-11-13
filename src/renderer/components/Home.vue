@@ -1,11 +1,14 @@
 <template>
   <div id="wrapper">
+    <p id="demo"></p>
     <!-- <button type="input" class="btn" @click="updateStorage">test</button> -->
     <rowitems></rowitems>
   </div>
 </template>
 
 <script>
+
+
   import SystemInformation from './LandingPage/SystemInformation'
   import Rowitems from './LandingPage/Rowitems'
   const Git = require('../../git')
@@ -15,14 +18,11 @@
     components: { SystemInformation, Rowitems  },
     methods: {
       updateStorage: function(e) {
-        console.log('Update')
-        // Update.autoUpdate()
         Git.updateStorage()
       }
     },
     created () {
       this.updateStorage()
-      // Update.autoUpdate()
     }
   }
 </script>
