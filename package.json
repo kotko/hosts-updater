@@ -1,6 +1,6 @@
 {
   "name": "hosts-update",
-  "version": "0.1.5",
+  "version": "0.1.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/kotko/hosts-updater.git"
@@ -31,7 +31,7 @@
   },
   "build": {
     "productName": "hosts-update",
-    "buildVersion": "0.1.5",
+    "buildVersion": "0.1.4",
     "appId": "com.kotko.hosts-update",
     "publish": [{
          "provider":"github",
@@ -66,7 +66,7 @@
       "publish": [
         "github"
       ],
-      "identity" : "Mac Developer: m@kotko.tk (84NUUDM6W3)",
+      "identity" : "Mac Developer: graspl.kotko@gmail.com (PY3CZ3U95D)",
       "target": [
         "dmg",
         "zip"

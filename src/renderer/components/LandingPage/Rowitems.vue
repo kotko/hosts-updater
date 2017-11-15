@@ -1,24 +1,26 @@
 <template>
   <form>
-    <div class="row">
-      <div class="row align-items-center items__hosts" v-for="msg in arrHosts">
-        <div class="col-3">
-          <div class="togglebutton">
-            <label class="title__hosts">
-              <input :data-fileName="msg.fileName" :name="msg.name" :id="msg.name" :value="msg.fileName" type="checkbox"
-              v-model="toggle"
-              v-on:input="checkboxVal = $event.target.value"
-              v-bind:selected.sync="selectedMembers"
-              @click="checkboxToggle"
-              >
-              <div class="toggle"></div>
-              {{ msg.name }}
-            </label>
+    <div class="">
+      <div class="col-md-12">
+        <div class="row align-items-center items__hosts" v-for="msg in arrHosts">
+          <div class="col-3">
+            <div class="togglebutton">
+              <label class="title__hosts">
+                <input :data-fileName="msg.fileName" :name="msg.name" :id="msg.name" :value="msg.fileName" type="checkbox"
+                v-model="toggle"
+                v-on:input="checkboxVal = $event.target.value"
+                v-bind:selected.sync="selectedMembers"
+                @click="checkboxToggle"
+                >
+                <div class="toggle"></div>
+                {{ msg.name }}
+              </label>
+            </div>
           </div>
+        <div class="col-9">
+          <h5 class="title__hosts mb-1"></h5>
         </div>
-      <div class="col-9">
-        <h5 class="title__hosts mb-1"></h5>
-      </div>
+        </div>
       </div>
     </div>
   </form>

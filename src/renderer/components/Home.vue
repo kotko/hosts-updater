@@ -3,8 +3,33 @@
     <p id="demo"></p>
     <!-- <button type="input" class="btn" @click="updateStorage">test</button> -->
     <rowitems></rowitems>
+    <div style="float:left" id="updating-status"></div>
     <div style="text-align:right" id="version">v{{version}}</div>
+
+
+    <div id="modals"  style="text-align:center">
+      <div class="modal-dialog update-modal">
+        <div class="modal-content" style="">
+          <div class="modal-body" style="height: 120px;">
+            <i style="
+                padding: 0;
+                text-align: center;
+                display: table;
+                position: absolute;
+                top: 30px;
+
+                right: 0;
+                left: 0;
+                margin: auto;
+            " class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>
+            <span class="sr-only"></span>
+            <p id="percent-update"></p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
 </template>
 
 <script>

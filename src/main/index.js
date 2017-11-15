@@ -4,7 +4,7 @@ let {autoUpdater} = require("electron-updater");
 let tray = undefined
 let win = null;
 const positioner = require('electron-traywindow-positioner');
-
+require('electron-debug')({showDevTools: true});
 
 /**
  * Set `__static` path to static files in production
@@ -27,6 +27,8 @@ const winURL = process.env.NODE_ENV === 'development'
 function sendStatusToWindow(text) {
   let title = win.getTitle();
   win.setTitle(title+": "+text);
+  let code = `document.getElementById("updating-status").innerHTML = ${text};`;
+ win.webContents.executeJavaScript(code);
 }
 function createWindow () {
   tray = new Tray(`${__static}/png/16x16.png`);
@@ -46,7 +48,7 @@ function createWindow () {
     minHeight: 400,
     show: true,
     title: 'Hosts update '+app.getVersion(),
-    // frame: false,
+    frame: true,
     "web-preferences": {
      "web-security": false
    },
@@ -54,7 +56,7 @@ function createWindow () {
   })
 win.loadURL(winURL)
 
-
+  win.openDevTools()
 // autoUpdater.allowDowngrade = true;
 
 }
@@ -105,6 +107,8 @@ sendStatusToWindow('Checking for update...');
 });
 autoUpdater.on('update-available', (ev, info) => {
 sendStatusToWindow('Update available.');
+// let code_1 = `document.getElementById("body").innerHTML += '<div class="modal-backdrop fade in"></div>';`;
+// win.webContents.executeJavaScript(code_1);
 });
 autoUpdater.on('update-not-available', (ev, info) => {
 sendStatusToWindow('Update not available.');
@@ -114,11 +118,18 @@ sendStatusToWindow('Error in auto-updater.:'+err);
 process.stdout.write(ev,err);
 });
 autoUpdater.on('download-progress', (progressObj) => {
-let log_message = "Download speed: " + progressObj.bytesPerSecond;
-log_message = (progressObj && progressObj.percent) ? progressObj.percent / 100 : -1
-sendStatusToWindow(log_message);
-let code = `document.getElementById("demo").innerHTML = ${log_message};`;
-   win.webContents.executeJavaScript(code);
+// let log_message = "Download speed: " + progressObj.bytesPerSecond;
+let log_message = (progressObj && progressObj.percent) ? progressObj.percent / 100 : -1
+
+
+let code_2 = `document.getElementById("modal-backdrop").style.display = "block";`;
+let code_3 = `document.getElementById("modals").style.display = "block";`;
+let code_4 = `document.getElementById("percent-update").innerHTML = ${Math.round(log_message * 100)}+"%";`;
+
+   win.webContents.executeJavaScript(code_2);
+   win.webContents.executeJavaScript(code_3);
+   win.webContents.executeJavaScript(code_4);
+
 });
 autoUpdater.on('update-downloaded', (ev, info) => {
 sendStatusToWindow('Update downloaded; will install in 5 seconds');

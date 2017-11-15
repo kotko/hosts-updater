@@ -18,6 +18,8 @@
   /*@import "~bootstrap/dist/css/bootstrap.css";*/
   /*@import "~bootstrap-vue/dist/bootstrap-vue.css";*/
   /*@import "~bootstrap-material-design/dist/css/bootstrap-material-design.min.css";*/
+  @import "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";  
+  @import "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css";
   @import "./assets/css/bootstrap-material-design.min.css";
   @import "./assets/css/ripples.min.css";
   @import "./assets/css/main.css";
